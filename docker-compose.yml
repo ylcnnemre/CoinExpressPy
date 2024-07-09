@@ -21,6 +21,9 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest # Kullanıcı adı
       RABBITMQ_DEFAULT_PASS: 12345*x # Parola
+    networks:
+      - mynetwork
+
 
   redis:
     image: redis
@@ -28,17 +31,8 @@ services:
     ports:
       - '5679:6379'
     command: redis-server --requirepass mypassword*1xw
-
-  python-app:
-    build:
-      context: ./pythonta
-      dockerfile: dockerfile
-    volumes:
-      - ./pythonta:/app
-    depends_on:
-      - mongodb
-      - rabbitmq
-      - redis
+    networks:
+      - mynetwork
 
   node-app:
     build:
@@ -52,7 +46,12 @@ services:
       - mongodb
       - rabbitmq
       - redis
-      - python-app
+    networks:
+      - mynetwork
 
 volumes:
   mongodb_data:
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -18,6 +18,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const _ndicatorRouter_1 = require("./router/\u0130ndicatorRouter");
 const db_1 = require("./config/db");
 const RedisConnect_1 = require("./config/RedisConnect");
+const amqplib_1 = __importDefault(require("amqplib"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -40,7 +41,31 @@ app.use((err, req, res, next) => {
 app.get("/", (req, res) => {
     res.send("selam");
 });
+const rabbitControl = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const connection = yield amqplib_1.default.connect({
+            hostname: "rabbitmq",
+            port: 5672,
+            username: "guest",
+            password: "12345*x"
+        });
+        console.log("connection", connection);
+        console.log("rabbit bağlandı");
+    }
+    catch (err) {
+        console.log("tavşan hata verdi => ", err.message);
+    }
+});
 app.listen(5000, () => {
+    const redis = (0, RedisConnect_1.connectRedis)();
+    redis.on("connect", () => {
+        console.log("redis bağlantısı başarılı");
+    });
+    redis.on('error', (err) => {
+        console.error('Redis bağlantı hatası:', err);
+    });
+    /* rabbitControl() */
     (0, db_1.connectDb)();
+    rabbitControl();
     console.log("server is running");
 });

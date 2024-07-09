@@ -7,8 +7,8 @@ exports.connectRedis = void 0;
 const ioredis_1 = __importDefault(require("ioredis"));
 const connectRedis = () => {
     const redis = new ioredis_1.default({
-        host: "localhost",
-        port: 5679,
+        host: "redis",
+        port: 6379,
         password: "mypassword*1xw",
     });
     return redis;

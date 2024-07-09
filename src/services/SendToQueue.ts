@@ -4,7 +4,7 @@ import { rabbitConnect } from "../config/RabbitMqConnection";
 import { connectRedis } from "../config/RedisConnect";
 
 async function sendToQueue(message: any, queue: string) {
-    const connection = await rabbitConnect()
+    const connection: any = await rabbitConnect()
     const channel = await connection.createChannel();
     console.log("mess", message)
     const redis = connectRedis()

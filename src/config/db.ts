@@ -5,7 +5,7 @@ const connectDb = () => {
     const password = process.env.MONGO_INITDB_ROOT_PASSWORD; // .env dosyasındaki değeri kullanın
     const dbName = 'coindb';
     console.log("username => ", username, password)
-    const mongoURL = `mongodb://${username}:${password}@localhost:27017/${dbName}?authSource=admin`;
+    const mongoURL = `mongodb://${username}:${password}@mongodb:27017/${dbName}?authSource=admin`;
     mongoose.connect(mongoURL)
         .then(() => {
             console.log('MongoDB\'ye başarıyla bağlandı.');
