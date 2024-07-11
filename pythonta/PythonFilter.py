@@ -12,7 +12,7 @@ import aiormq
 # Redis bağlantısı
 redis_params = {
     'host': 'redis',
-    'port': 5679,
+    'port': 6379,
     'password': 'mypassword*1xw',
     'decode_responses': True
 }
@@ -171,7 +171,7 @@ async def consume_message(queue: aio_pika.abc.AbstractQueue, channel: aio_pika.a
 
 
 async def main() -> None:
-    connection = await aio_pika.connect("amqp://guest:12345*x@rabbitmq/")
+    connection = await aio_pika.connect("amqp://guest:12345*x@rabbitmq")
     async with connection:
         channel = await connection.channel()
 

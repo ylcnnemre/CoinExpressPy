@@ -63,7 +63,6 @@ app.listen(5000, () => {
     redis.on('error', (err) => {
         console.error('Redis bağlantı hatası:', err);
     });
-    /* rabbitControl() */
     connectDb()
     rabbitControl()
     console.log("server is running")

@@ -49,7 +49,6 @@ const rabbitControl = () => __awaiter(void 0, void 0, void 0, function* () {
             username: "guest",
             password: "12345*x"
         });
-        console.log("connection", connection);
         console.log("rabbit bağlandı");
     }
     catch (err) {
@@ -64,7 +63,6 @@ app.listen(5000, () => {
     redis.on('error', (err) => {
         console.error('Redis bağlantı hatası:', err);
     });
-    /* rabbitControl() */
     (0, db_1.connectDb)();
     rabbitControl();
     console.log("server is running");

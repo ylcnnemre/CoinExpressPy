@@ -11,6 +11,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: 1234
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - mynetwork
+  
 
   rabbitmq:
     image: rabbitmq:3.9.4-management
@@ -34,18 +37,34 @@ services:
     networks:
       - mynetwork
 
+  python-app:
+    build:
+      context: ./pythonta
+      dockerfile: dockerfile
+    volumes:
+      - ./pythonta:/app
+    restart: always
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - redis
+    networks:
+      - mynetwork
+
   node-app:
     build:
       context: .
       dockerfile: dockerfile
     ports:
       - '5000:5000'
+    restart: always
     volumes:
       - .:/usr/src/app
     depends_on:
       - mongodb
       - rabbitmq
       - redis
+      - python-app
     networks:
       - mynetwork
 
