@@ -173,7 +173,7 @@ async def consume_message(queue: aio_pika.abc.AbstractQueue, channel: aio_pika.a
 
 async def check_rabbitmq_connection():
     try:
-        await asyncio.sleep(10)
+        await asyncio.sleep(20)
         connection = await aio_pika.connect_robust(
             "amqp://guest:12345*x@rabbitmq"
         )
