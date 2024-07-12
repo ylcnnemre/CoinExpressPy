@@ -13,7 +13,6 @@ services:
       - mongodb_data:/data/db
     networks:
       - mynetwork
-  
 
   rabbitmq:
     image: rabbitmq:3.9.4-management
@@ -26,7 +25,6 @@ services:
       RABBITMQ_DEFAULT_PASS: 12345*x # Parola
     networks:
       - mynetwork
-
 
   redis:
     image: redis
@@ -54,7 +52,7 @@ services:
   node-app:
     build:
       context: .
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
       - '5000:5000'
     restart: always
