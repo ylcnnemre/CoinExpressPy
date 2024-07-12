@@ -10,8 +10,14 @@ COPY package*.json ./
 # Install Node.js dependencies
 RUN npm install
 
+# Install TypeScript globally
+RUN npm install -g typescript
+
 # Copy the rest of the application code
 COPY . .
+
+# Compile TypeScript files
+RUN tsc
 
 # Expose the port the app runs on
 EXPOSE 5000
