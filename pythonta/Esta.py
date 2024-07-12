@@ -8,7 +8,7 @@ exchange = 'BIST'
 periyot = '1D'
 
 datas = SI.Stocks(exchange)
-print(datas)
+
 
 Titles = ['name', 'close', 'successRate', 'status']
 df_signals = pd.DataFrame(columns=Titles)
@@ -90,3 +90,21 @@ def EstaAnalysis():
 """ if __name__ == "__main__":
     df_true_signals = EstaAnalysis()
     print(df_true_signals) """
+
+
+""" node-app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - '5000:5000'
+    restart: always
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - redis
+      - python-app
+    networks:
+      - mynetwork """

@@ -8,8 +8,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install Node.js dependencies
-RUN npm install
 RUN npm install -g typescript
+RUN npm install -g ts-node
+RUN npm install
+
 # Copy the rest of the application code
 COPY . .
 

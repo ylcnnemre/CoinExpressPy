@@ -5,10 +5,6 @@ import pandas as pd
 from tradingview_screener import get_all_symbols
 from tvDatafeed import TvDatafeed, Interval
 
-tv = TvDatafeed(
-    username="codexfayt",
-    password= "123x5?+*reWx"
-)
 
 # Stocks for BIST or BINANCE
 
@@ -45,6 +41,10 @@ def TVGet(name, exchange, interval, nbars=100):
         '1W': Interval.in_weekly,
         '1M': Interval.in_monthly,
     }
+    tv = TvDatafeed(
+        username="codexfayt",
+        password= "123x5?+*reWx"
+    )
 
     if interval in interval_mapping:
         mapped_interval = interval_mapping[interval]

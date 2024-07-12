@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendToQueue = sendToQueue;
+exports.sendToQueue = void 0;
 const uuid_1 = require("uuid");
 const RabbitMqConnection_1 = require("../config/RabbitMqConnection");
 const RedisConnect_1 = require("../config/RedisConnect");
@@ -48,3 +48,4 @@ function sendToQueue(message, queue) {
         });
     });
 }
+exports.sendToQueue = sendToQueue;

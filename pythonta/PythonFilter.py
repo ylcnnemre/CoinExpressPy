@@ -170,8 +170,26 @@ async def consume_message(queue: aio_pika.abc.AbstractQueue, channel: aio_pika.a
             print(f"Unknown routing key: {message.routing_key}")
 
 
+
+async def check_rabbitmq_connection():
+    try:
+        await asyncio.sleep(10)
+        connection = await aio_pika.connect_robust(
+            "amqp://guest:12345*x@rabbitmq"
+        )
+        print("RabbitMQ'ya başarıyla bağlandı.")
+        # Bağlantıyı kapat
+        await connection.close()
+    except Exception as e:
+        print(f"RabbitMQ'ya bağlanılamadı: {e}")
+
+
+
 async def main() -> None:
+    print("PyFilter Başladı")
+    await check_rabbitmq_connection()
     connection = await aio_pika.connect("amqp://guest:12345*x@rabbitmq")
+    
     async with connection:
         channel = await connection.channel()
 
@@ -187,5 +205,28 @@ async def main() -> None:
         await asyncio.Future()
 
 
+print("selam")
+
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+
+
+
+""" node-app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - '5000:5000'
+    restart: always
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - redis
+      - python-app
+    networks:
+      - mynetwork """
