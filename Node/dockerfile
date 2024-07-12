@@ -10,9 +10,10 @@ COPY package*.json ./
 # Install Node.js dependencies
 RUN npm install
 
-# Install TypeScript globally
 RUN npm install -g typescript
 
+RUN npm run build 
+# Install TypeScript globally
 # Copy the rest of the application code
 COPY . .
 
