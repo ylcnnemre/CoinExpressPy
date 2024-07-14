@@ -38,8 +38,17 @@ app.get("/", (req, res) => {
     res.send("selam")
 })
 
+function waitForTwentySeconds() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("20 seconds have passed");
+        }, 20000); // 20 seconds = 20000 milliseconds
+    });
+}
+
 const rabbitControl = async () => {
     try {
+        await waitForTwentySeconds()
         const connection = await amqp.connect({
             hostname: "rabbitmq",
             port: 5672,
