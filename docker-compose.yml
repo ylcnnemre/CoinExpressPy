@@ -64,6 +64,16 @@ services:
     networks:
       - mynetwork
 
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --standalone --preferred-challenges http --email qlmkc2@gmail.com --agree-tos -d 79.110.51.143
+    networks:
+      - mynetwork
+
+
 volumes:
   mongodb_data:
 
