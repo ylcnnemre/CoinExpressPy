@@ -67,8 +67,8 @@ services:
   certbot:
     image: certbot/certbot
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt  # SSL sertifikalarının saklanacağı dizin
+      - ./certbot/www:/var/www/certbot  # Certbot'un geçici olarak kullanacağı web kök dizini
     command: certonly --standalone --preferred-challenges http --email qlmkc2@gmail.com --agree-tos -d www.kodafor.com
     networks:
       - mynetwork
