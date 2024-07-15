@@ -69,7 +69,7 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --standalone --preferred-challenges http --email qlmkc2@gmail.com --agree-tos -d kodafor.com -d www.kodafor.com
+    command: certonly --standalone --preferred-challenges http --email qlmkc2@gmail.com --agree-tos -d www.kodafor.com
     networks:
       - mynetwork
 
