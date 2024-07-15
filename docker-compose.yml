@@ -69,10 +69,10 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --standalone --preferred-challenges http --email qlmkc2@gmail.com --agree-tos -d 79.110.51.143
+    command: certonly --standalone --preferred-challenges http --email qlmkc2@gmail.com --agree-tos -d kodafor.com -d www.kodafor.com
     networks:
       - mynetwork
-      
+
   nginx:
     image: nginx:latest
     restart: always
