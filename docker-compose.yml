@@ -64,7 +64,27 @@ services:
     networks:
       - mynetwork
 
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --standalone --preferred-challenges http --email qlmkc2@gmail.com --agree-tos -d www.kodafor.com
+    networks:
+      - mynetwork
 
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - node-app
+    networks:
+      - mynetwork
 
 volumes:
   mongodb_data:
