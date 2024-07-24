@@ -17,6 +17,14 @@ indicatorRouter.get("/strategies", (req, res) => {
     })
 })
 
+indicatorRouter.get("/test", (req, res) => {
+
+    return res.json({
+        message: "server is running"
+    })
+})
+
+
 export {
     indicatorRouter
 }

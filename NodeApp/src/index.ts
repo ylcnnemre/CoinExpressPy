@@ -18,8 +18,12 @@ app.get("/", async (req, res) => {
 
     const response = await redis.set("aa", "tesRed")
     const cevap = await redis.get("aa")
-    res.send(cevap)
+    res.json({
+        message: "server is running",
+        redisTest: cevap
+    })
 })
+
 
 
 
@@ -34,9 +38,7 @@ app.use((err: BaseException, req: Request, res: Response, next: NextFunction) =>
 });
 
 
-app.get("/", (req, res) => {
-    res.send("selam")
-})
+
 
 function waitForTwentySeconds() {
     return new Promise((resolve) => {
@@ -76,3 +78,52 @@ app.listen(5000, () => {
     rabbitControl()
     console.log("server is running")
 })
+
+
+/* server {
+    listen 80;
+    server_name kodafor.com www.kodafor.com;
+
+    location / {
+        proxy_pass http://localhost:5000;  # Node.js uygulamanızın çalıştığı port
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api {
+        proxy_pass http://localhost:8000;  # Python uygulamanızın çalıştığı port
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name kodafor.com www.kodafor.com;
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api {
+        proxy_pass http://localhost:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+ */
