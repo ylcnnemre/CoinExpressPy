@@ -71,7 +71,7 @@ const rabbitControl = async () => {
 
 
 app.listen(5000, () => {
-    /* const redis = connectRedis()
+    const redis = connectRedis()
     redis.on("connect", () => {
         console.log("redis bağlantısı başarılı")
     })
@@ -79,7 +79,7 @@ app.listen(5000, () => {
         console.error('Redis bağlantı hatası:', err);
     });
     connectDb()
-    rabbitControl() */
+    rabbitControl()
     console.log("server is running")
 })
 
