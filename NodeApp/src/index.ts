@@ -7,9 +7,13 @@ import { connectDb } from "./config/db"
 import { connectRedis } from "./config/RedisConnect"
 import { rabbitConnect } from "./config/RabbitMqConnection"
 import amqp from "amqplib"
+import path from "path"
 dotenv.config()
 const app = express()
 app.use(express.json())
+
+app.use('/static', express.static(path.join(__dirname, 'public')));
+
 
 app.use("/api", indicatorRouter)
 
@@ -67,7 +71,7 @@ const rabbitControl = async () => {
 
 
 app.listen(5000, () => {
-    const redis = connectRedis()
+    /* const redis = connectRedis()
     redis.on("connect", () => {
         console.log("redis bağlantısı başarılı")
     })
@@ -75,55 +79,8 @@ app.listen(5000, () => {
         console.error('Redis bağlantı hatası:', err);
     });
     connectDb()
-    rabbitControl()
+    rabbitControl() */
     console.log("server is running")
 })
 
 
-/* server {
-    listen 80;
-    server_name kodafor.com www.kodafor.com;
-
-    location / {
-        proxy_pass http://localhost:5000;  # Node.js uygulamanızın çalıştığı port
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location /api {
-        proxy_pass http://localhost:8000;  # Python uygulamanızın çalıştığı port
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-
-server {
-    listen 443 ssl;
-    server_name kodafor.com www.kodafor.com;
-
-    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-    location / {
-        proxy_pass http://localhost:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location /api {
-        proxy_pass http://localhost:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
- */
