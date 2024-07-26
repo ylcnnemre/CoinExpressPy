@@ -1,8 +1,12 @@
 import amqp from "amqplib"
+import { dockerConfig, isLocal, localConfig } from "../constant/devConfig";
+
+
+const dev = isLocal ? localConfig : dockerConfig
 
 const rabbitConnect = async () => {
     try {
-        const connection = await amqp.connect("amqp://guest:12345*x@rabbitmq")
+        const connection = await amqp.connect(`amqp://guest:12345*x@${dev.rabbit}`)
         console.log('RabbitMQ bağlantısı başarıyla sağlandı.');
         return connection
     }

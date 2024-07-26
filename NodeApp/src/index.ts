@@ -5,9 +5,9 @@ import { BaseException } from "./exception/BaseException"
 import { indicatorRouter } from "./router/İndicatorRouter"
 import { connectDb } from "./config/db"
 import { connectRedis } from "./config/RedisConnect"
-import { rabbitConnect } from "./config/RabbitMqConnection"
-import amqp from "amqplib"
 import path from "path"
+import { rabbitControl, redisControl } from "./config/TestConnection"
+
 dotenv.config()
 const app = express()
 app.use(express.json())
@@ -44,42 +44,13 @@ app.use((err: BaseException, req: Request, res: Response, next: NextFunction) =>
 
 
 
-function waitForTwentySeconds() {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve("20 seconds have passed");
-        }, 20000); // 20 seconds = 20000 milliseconds
-    });
-}
 
-const rabbitControl = async () => {
-    try {
-        await waitForTwentySeconds()
-        const connection = await amqp.connect({
-            hostname: "rabbitmq",
-            port: 5672,
-            username: "guest",
-            password: "12345*x"
-        })
-        console.log("rabbit bağlandı")
-    }
-    catch (err: any) {
-        console.log("tavşan hata verdi => ", err.message)
-    }
-
-}
 
 
 app.listen(5000, () => {
-    const redis = connectRedis()
-    redis.on("connect", () => {
-        console.log("redis bağlantısı başarılı")
-    })
-    redis.on('error', (err) => {
-        console.error('Redis bağlantı hatası:', err);
-    });
     connectDb()
     rabbitControl()
+    redisControl()
     console.log("server is running")
 })
 
