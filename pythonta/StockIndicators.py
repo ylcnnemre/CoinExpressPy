@@ -4,19 +4,107 @@ import numpy as np
 import pandas as pd
 from tradingview_screener import get_all_symbols
 from tvDatafeed import TvDatafeed, Interval
-
+import requests
 
 # Stocks for BIST or BINANCE
+
+def getSymbolsAll(market:str="turkey")-> list[str]:
+    URL = 'https://scanner.tradingview.com/{market}/scan'
+    if market !="crypto":
+        r = requests.post(URL.format(market=market),json={
+                        "columns": [
+                            "name",
+                        ],
+                        "ignore_unknown_fields": False,
+                        "options": {
+                            "lang": "tr"
+                        },
+                        "range": [
+                            0,
+                            200
+                        ],
+                        "sort": {
+                            "sortBy": "market_cap_basic",
+                            "sortOrder": "desc"
+                        },
+        })
+
+        data=r.json()["data"]
+        
+        return [dct['s'] for dct in data]
+
+    else :
+        r = requests.post(URL.format(market=market),json={
+            "filter": [
+                {
+                "left": "exchange",
+                "operation": "equal",
+                "right": "BINANCE"
+                }
+            ],
+            "options": {
+                "lang": "tr"
+            },
+            "markets": [
+                "crypto"
+            ],
+            "symbols": {
+                "query": {
+                "types": []
+                },
+                "tickers": []
+            },
+            "columns": [
+                "base_currency_logoid",
+                "currency_logoid",
+                "name",
+                "close",
+                "change",
+                "change_abs",
+                "high",
+                "low",
+                "volume",
+                "24h_vol|5",
+                "24h_vol_change|5",
+                "Recommend.All",
+                "exchange",
+                "description",
+                "type",
+                "subtype",
+                "update_mode",
+                "pricescale",
+                "minmov",
+                "fractional",
+                "minmove2"
+            ],
+            "sort": {
+                "sortBy": "24h_vol|5",
+                "sortOrder": "desc"
+            },
+            "price_conversion": {
+                "to_symbol": False
+            },
+            "range": [
+                0,
+                200
+            ]
+        })
+
+        data=r.json()["data"]
+        
+        return [dct['s'] for dct in data]
+
+
 
 
 def Stocks(name):
     Stock_names = ''
     if name == 'BIST':
-        Stock_names = get_all_symbols(market='turkey')
+        Stock_names = getSymbolsAll(market='turkey')
         Stock_names = [symbol.replace('BIST:', '') for symbol in Stock_names]
         Stock_names = sorted(Stock_names)
     if name == 'BINANCE':
-        Stock_names = get_all_symbols(market='crypto')
+        Stock_names = getSymbolsAll(market='crypto')
         Stock_names = [symbol.replace('BINANCE:', '') for symbol in Stock_names if symbol.startswith(
             'BINANCE:') and symbol.endswith('USDT')]
         Stock_names = sorted(Stock_names)

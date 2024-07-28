@@ -1,6 +1,7 @@
 import express from "express"
 import { getIndicatorListControllre, getStrategiesListController, indicatorFilterController } from "../controller/İndicatorController"
 import { tarama_listesi } from "../constant/StrategyList"
+import { connectRedis } from "../config/RedisConnect"
 
 
 const indicatorRouter = express.Router()
@@ -15,6 +16,22 @@ indicatorRouter.get("/strategies", (req, res) => {
     return res.json({
         data: tarama_listesi
     })
+})
+
+indicatorRouter.post("/key", async (req, res) => {
+    const { key } = req.body
+    if (key == "flushxtr") {
+        const redis = connectRedis()
+        await redis.flushall()
+        res.json({
+            message: "bütün cachelar silindi"
+        })
+    }
+    else {
+        res.status(400).json({
+            message: "Key bulunamadı"
+        })
+    }
 })
 
 indicatorRouter.get("/test", (req, res) => {

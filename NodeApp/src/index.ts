@@ -19,14 +19,15 @@ app.use("/api", indicatorRouter)
 
 app.get("/", async (req, res) => {
     const redis = connectRedis()
-
-    const response = await redis.set("aa", "tesRed")
+    /* 
+        const response = await redis.set("aa", "tesRed") */
     const cevap = await redis.get("aa")
     res.json({
         message: "server is running",
         redisTest: cevap
     })
 })
+
 
 
 

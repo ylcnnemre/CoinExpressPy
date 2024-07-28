@@ -1607,7 +1607,7 @@ tarama_listesi = [
 
 
 def runStrategy(obj: dict):
-
+    print("runStrategy")
     selectedStrategy = next(filter(
         lambda x: x["id"] == obj["id"], tarama_listesi), None)
     metod = selectedStrategy["name"]

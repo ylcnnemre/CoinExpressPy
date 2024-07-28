@@ -66,7 +66,7 @@ def process_data_range_esta(start, end, exchange, periyot, datas):
 
 def EstaAnalysis():
     num_threads = 3  # Change this to the desired number of threads
-    data_length = 500  # len(datas)
+    data_length = 200  # len(datas)
     step = data_length // num_threads
     futures = []
 

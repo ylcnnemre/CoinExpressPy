@@ -35,7 +35,7 @@ def Harsi():
     periyot = '1D'
     datas = SI.Stocks(exchange)
     num_threads = 3  # Change this to the desired number of threads
-    data_length = 500  # len(datas)
+    data_length = 200  # len(datas)
     step = data_length // num_threads
     futures = []
 

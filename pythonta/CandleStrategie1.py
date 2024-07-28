@@ -151,7 +151,7 @@ def dss_bresser_scalper(exchange="BIST", periyot="1D"):
     datas = SI.Stocks(exchange)
     Titles = ['name', 'close', 'entrySignal']
     df_signals = pd.DataFrame(columns=Titles)
-    for i in range(0, 30):
+    for i in range(0, 200):
         try:
             data = SI.TVGet(datas[i], exchange, periyot, 100)
             data['DSS'] = SI.dss_bresser_scalper(

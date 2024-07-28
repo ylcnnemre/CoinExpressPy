@@ -2,6 +2,7 @@ import pandas as pd
 from tradingview_screener import Query, Column
 import StockIndicators as SI
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 def process_trendmagic_data_range(start, end, exchange, periyot, datas):
     Titles = ['name', 'close', 'entrySignal', "outputSignal"]
@@ -29,13 +30,13 @@ def process_trendmagic_data_range(start, end, exchange, periyot, datas):
             print("Exception--TrendMagic -> ", ex)
     return df_signals
 
-
 def TrendMagic():
+    start_time = time.time()
     exchange = 'BIST'
     periyot = '1D'
     datas = SI.Stocks(exchange)
-    num_threads = 3  # İstediğiniz thread sayısını buraya girin
-    data_length = 500   # len(datas)
+    num_threads = 4  # İstediğiniz thread sayısını buraya girin
+    data_length = 200   # len(datas)
     step = data_length // num_threads
     futures = []
 
@@ -52,4 +53,12 @@ def TrendMagic():
 
     df_signals = pd.concat(results)
     df_True = df_signals[(df_signals['entrySignal'] == 'True')]
+    end_time = time.time()
+    print(f"TrendMagic fonksiyonu {end_time - start_time} saniyede tamamlandı.")
     return df_True
+
+
+
+
+
+
