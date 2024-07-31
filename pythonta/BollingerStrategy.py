@@ -21,29 +21,56 @@ def getIntervalType(interval):
     }
     
 def BollingerBandStrategy(interval,market="turkey"):
+    if(market!="crypto"):
+        result=getIntervalType(interval=interval)
+        bbUpperField=result["bbUpperField"] 
+        bbLowerField=result["bbLowerField"]
+        sma20Field=result["sma20Field"]
 
-    result=getIntervalType(interval=interval)
-    bbUpperField=result["bbUpperField"] 
-    bbLowerField=result["bbLowerField"]
-    sma20Field=result["sma20Field"]
+        Tarama = (Query().set_markets(market).limit(400).order_by("market_cap_basic",ascending=False)
+                .select('name', 'change',"close", 'volume', 'Perf.W',bbUpperField,bbLowerField,sma20Field).get_scanner_data())[1]
+        print( Tarama)
+        resultList=[]
+        for index,row in Tarama.iterrows():
+            bbUpper= row[bbUpperField]
+            bbLower=row[bbLowerField]
+            sma20=row[sma20Field]
+            result = (bbUpper - bbLower) / sma20
+            resultList.append({
+                "name" : row["name"],
+                "bbWidth" : result * 100
+            })
+        
+        liste=sorted(resultList,key=lambda x : x["bbWidth"])
+        print(liste)
+        return liste
+    else :
+        result=getIntervalType(interval=interval)
+        bbUpperField=result["bbUpperField"] 
+        bbLowerField=result["bbLowerField"]
+        sma20Field=result["sma20Field"]
 
-    Tarama = (Query().set_markets('turkey').limit(400).order_by("market_cap_basic",ascending=False)
-              .select('name', 'change',"close", 'volume', 'Perf.W',bbUpperField,bbLowerField,sma20Field).get_scanner_data())[1]
-    print( Tarama)
-    resultList=[]
-    for index,row in Tarama.iterrows():
-        bbUpper= row[bbUpperField]
-        bbLower=row[bbLowerField]
-        sma20=row[sma20Field]
-        result = (bbUpper - bbLower) / sma20
-        resultList.append({
-            "name" : row["name"],
-            "bbWidth" : result * 100
-        })
-    
-    liste=sorted(resultList,key=lambda x : x["bbWidth"])
-    print(liste)
-    return Tarama
+        Tarama = (Query().set_markets("crypto").limit(50).order_by("market_cap_basic",ascending=False)
+                .select('name', 'change',"close", 'volume', 'Perf.W',bbUpperField,bbLowerField,sma20Field))
+        datas=Tarama.where(
+            Column("exchange") == Column("BINANCE") ,
+            Column("name").like("USDT"),
+            Column("type").isin(["spot"])
+        ).get_scanner_data()[1]
+        resultList=[]
+        for index,row in datas.iterrows():
+            bbUpper= row[bbUpperField]
+            bbLower=row[bbLowerField]
+            sma20=row[sma20Field]
+            result = (bbUpper - bbLower) / sma20
+            resultList.append({
+                "name" : row["name"],
+                "bbWidth" : result * 100
+            })
+        liste=sorted(resultList,key=lambda x : x["bbWidth"])
+        print(liste)
+        return liste
+
 
 
 def binanceTest():
@@ -55,4 +82,8 @@ def binanceTest():
     
     data=q.get_scanner_data()
     print("data",data)
-binanceTest()
+
+
+sonuc=BollingerBandStrategy("1h","crypto")
+
+print("sonux",sonuc)
