@@ -440,7 +440,7 @@ export const tarama_listesi = [
         "expiration": 300,
         "description": "Mum analizi"
     },
-    {
+    /* {
         "id": 52,
         "key": "Dss_Bresser_Scalper",
         "tag": "",
@@ -479,6 +479,6 @@ export const tarama_listesi = [
         "indicators": [],
         "expiration": 1000,
         "description": "Esta Analiz"
-    }
+    } */
 ]
 
