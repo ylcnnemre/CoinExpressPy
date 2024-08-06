@@ -478,7 +478,8 @@ def Tarama_21():
               .where(
         Column('close').crosses_above(Column('BB.lower')),
         Column('Stoch.RSI.K').crosses_above(Column('Stoch.RSI.D')),
-        Column('Stoch.RSI.D') < 20
+        Column('Stoch.RSI.D') < 20,
+        
     )
         .get_scanner_data())[1]
     return Tarama
