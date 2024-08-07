@@ -103,6 +103,16 @@ export const mobileIndicatorList: Array<{ indicatorName: string, condition: { na
             },
         ]
     },
+
+    /* {
+        indicatorName: "average_volume_10d_calc",
+        condition: [
+            {
+                "name": "between",
+                "type": "range"
+            }
+        ]
+    }, */
     {
         indicatorName: "Stoch.RSI.K",
         condition: [
@@ -201,6 +211,56 @@ export const mobileIndicatorList: Array<{ indicatorName: string, condition: { na
             name: "between",
             type: "range"
         }
+        ]
+    },
+    {
+        indicatorName: "MACD.macd",
+        condition: [
+            {
+                "name": "less",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.signal"]
+            },
+            {
+                "name": "greater",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.signal"]
+            },
+            {
+                "name": "crosses_below",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.signal"]
+            },
+            {
+                "name": "crosses_above",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.signal"]
+            }
+        ]
+    },
+    {
+        indicatorName: "MACD.signal",
+        condition: [
+            {
+                "name": "less",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.macd"]
+            },
+            {
+                "name": "greater",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.macd"]
+            },
+            {
+                "name": "crosses_below",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.macd"]
+            },
+            {
+                "name": "crosses_above",
+                "type": "select",
+                values: ["close", "open", "high", "low", "MACD.macd"]
+            }
         ]
     },
     {

@@ -12,6 +12,7 @@ def getConditions(conditions):
         # bazı operatörler değer gerektirmez
         value = condition.get('value', None)
         column = Column(col_name)
+
         if operator == '>':
             where_conditions.append(column > value)
         elif operator == '<':
@@ -54,7 +55,6 @@ def getStockData(market, columns, conditions, tickers: list, offset=0, limit=100
 
     result = dfToJsonConvert(data)
     return result
-
 
 
 """  {'column': 'RSI', 'operator': '>', 'value': 50},
