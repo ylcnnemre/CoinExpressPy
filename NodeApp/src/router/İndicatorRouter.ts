@@ -2,6 +2,7 @@ import express from "express"
 import { getIndicatorListControllre, getStrategiesListController, indicatorFilterController } from "../controller/İndicatorController"
 import { tarama_listesi } from "../constant/StrategyList"
 import { connectRedis } from "../config/RedisConnect"
+import { GetCryptoPriceController } from "../controller/CryptoController"
 
 
 const indicatorRouter = express.Router()
@@ -17,6 +18,9 @@ indicatorRouter.get("/strategies", (req, res) => {
         data: tarama_listesi
     })
 })
+
+indicatorRouter.get("/crypto",GetCryptoPriceController)
+
 
 indicatorRouter.post("/key", async (req, res) => {
     const { key } = req.body

@@ -28,7 +28,16 @@ app.get("/", async (req, res) => {
     })
 })
 
+app.get("/tex", (req, res) => {
+    const person: any = {
+        name: "Alice",
+        age: 25
+    };
 
+    console.log(person.address.street);
+
+    res.send("selam")
+})
 
 
 
