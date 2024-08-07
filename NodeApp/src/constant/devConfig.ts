@@ -6,7 +6,7 @@ interface IConfig {
     type: "local" | "docker"
 }
 
-const isLocal: boolean = true
+const isLocal: boolean = false
 
 const dockerConfig: IConfig = {
     redisHost: "redis",
