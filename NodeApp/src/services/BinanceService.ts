@@ -1,5 +1,6 @@
 import axios from "axios"
-
+import { getMoonPhase } from "./MoonPhase"
+import { format } from "date-fns"
 const axiosInstance = axios.create({
     baseURL: "https://api.binance.com"
 })
@@ -17,11 +18,26 @@ const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: 
     const response = await axiosInstance.get(`/api/v3/klines?symbol=${params.symbol}&interval=${params.interval}&limit=${params.limit}`)
     const mainData: Array<Array<any>> = response.data
     let formatData = mainData.map(item => {
-        return {
-            "time": ConvertTime(item[0]),
-            "open": item[1],
-            "close": item[4],
-            "volume": item[5]
+        let time = ConvertTime(item[0])
+        if (params.interval !== "1d") {
+            return {
+                "time": time,
+                "open": item[1],
+                "close": item[4],
+                "volume": item[5],
+            }
+        }
+        else {
+            const dateObject = new Date(item[0]);
+            const formatted = new Date(format(dateObject, "dd.MM.yyyy"))
+            return {
+                "time": time,
+                "open": item[1],
+                "close": item[4],
+                "volume": item[5],
+                "moonPhase": getMoonPhase(dateObject)
+            }
+
         }
     })
     return {
@@ -38,7 +54,7 @@ const ConvertTime = (timestamp: number) => {
 const CoinTicker = async (): Promise<Array<{ symbol: string, baseAsset: string, quoteAsset: string }>> => {
 
     const response = await axiosInstance.get("/api/v3/exchangeInfo")
-    const forbiddenList = ["USDC", "TUSD", "PAX", "BUSD", "EUR", "ETHBULL", "ETHBEAR",
+    const forbiddenList = ["USDC", "TUSD", "PAX", "BUSD", "EUR", "ETHBULL", "ETHBEAR","BCHABC","BCHSV",
         "EOSBULL", "EOSBEAR", "XRPBEAR", "XRPBULL", "BNBBULL",
         "BNBBEAR", "BNBUP", "BNBDOWN", "BTCUP", "BTCDOWN", "ETHUP", "ETHDOWN", "ADADOWN", "ADAUP", "LINKUP", "LINKDOWN", "GBP", "DOTUP", "DOTDOWN", "LTCUP", "LTCDOWN"
     ]
@@ -49,7 +65,8 @@ const CoinTicker = async (): Promise<Array<{ symbol: string, baseAsset: string, 
         return {
             "symbol": el.symbol,
             "baseAsset": el.baseAsset,
-            "quoteAsset": el.quoteAsset
+            "quoteAsset": el.quoteAsset,
+
         }
     })
     return tickers

@@ -15,11 +15,14 @@
   "dependencies": {
     "amqplib": "^0.10.4",
     "axios": "^1.7.3",
+    "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
     "ioredis": "^5.4.1",
+    "lunarphase-js": "^2.0.3",
     "mongoose": "^8.4.1",
+    "suncalc": "^1.9.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

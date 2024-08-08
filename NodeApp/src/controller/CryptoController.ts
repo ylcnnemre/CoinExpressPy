@@ -12,6 +12,7 @@ const GetCryptoPriceController = async (req: Request, res: Response) => {
         }))
 
     res.json({
+        length: result.length,
         data: result
     })
 }
