@@ -86,6 +86,8 @@ def binanceTest():
     print("data",data)
 
 
-sonuc=BollingerBandStrategy("1h","crypto")
+""" sonuc=BollingerBandStrategy("1h","crypto")
 
-print("sonux",sonuc)
+print("sonux",sonuc) """
+
+binanceTest()

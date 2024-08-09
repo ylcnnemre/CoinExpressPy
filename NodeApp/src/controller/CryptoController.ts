@@ -7,9 +7,9 @@ const GetCryptoPriceController = async (req: Request, res: Response) => {
     const symbolList = await CoinTicker()
 
     const result = await Promise.all(
-        symbolList.slice(0, 20).map(el => {
-            return CoinPrices({ symbol: el.symbol, interval: "1d", limit: 200 })
-        }))
+        symbolList.slice(0, 200).map(el => {
+            return CoinPrices({ symbol: el.symbol, interval: "1d", limit: 500 })
+        }).reverse())
 
     res.json({
         length: result.length,
