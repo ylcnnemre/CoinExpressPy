@@ -1,23 +1,47 @@
 import mongoose from "mongoose";
 import { dockerConfig, isLocal, localConfig } from "../constant/devConfig";
+import { Sequelize } from "sequelize";
+
 
 const dev = isLocal ? localConfig : dockerConfig
 
-const connectDb = () => {
-    const username = process.env.MONGO_INITDB_ROOT_USERNAME; // .env dosyasındaki değeri kullanın
-    const password = process.env.MONGO_INITDB_ROOT_PASSWORD; // .env dosyasındaki değeri kullanın
-    const dbName = 'coindb';
-    console.log("username => ", username, password)
-    const mongoURL = `mongodb://${username}:${password}@${dev.mongo}:27017/${dbName}?authSource=admin`;
-    mongoose.connect(mongoURL)
-        .then(() => {
-            console.log('MongoDB\'ye başarıyla bağlandı.');
-        })
-        .catch((error) => {
-            console.error('MongoDB bağlantısı başarısız:', error);
-        });
+const sequelize = new Sequelize("mydatabase", "root", "1234abcDn", {
+    host: dev.postgres,
+    dialect: "postgres",
+    port: 5432
+})
+
+
+async function testConnection() {
+    try {
+        await sequelize.authenticate()
+        console.log("connection successfull")
+    }
+    catch (err) {
+        console.error("unable to connect", err)
+    }
+    finally {
+        /* await sequelize.close() */
+    }
 }
 
+async function syncDatabase() {
+    try {
+        await sequelize.sync({ alter: true }); // Tabloyu yeniden oluşturur, veriler silinir!
+        console.log("senkronizasyon tamam")
+    } catch (error) {
+        console.error('Error syncing the database:', error);
+    } finally {
+        /* await sequelize.close(); */
+    }
+}
+
+
+
+
 export {
-    connectDb
+    testConnection,
+    syncDatabase,
+    sequelize,
+    
 }

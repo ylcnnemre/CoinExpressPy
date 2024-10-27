@@ -1,21 +1,25 @@
 import { Request, Response, json } from "express"
 import { sendToQueue } from "../services/SendToQueue"
 import { connectRedis } from "../config/RedisConnect"
-import { BaseResponseMessageDto } from "../dto/ResponseMessageDto"
+import { SuccessResponseDto } from "../dto/ResponseMessageDto"
 import { mobileIndicatorList } from "../constant/indicatorList"
 
 
 const indicatorFilterController = async (req: Request, res: Response) => {
     console.log("reqq", req.body)
+    const body = {
+        ...req.body,
+        market: "france"
+    }
     const response: any = await sendToQueue(
-        req.body, "rpc_queue",
+        body, "rpc_queue",
     )
     const parsedData = JSON.parse(response)
     return res.json(parsedData)
 }
 
 const getIndicatorListControllre = (req: Request, res: Response) => {
-    const responseDto = new BaseResponseMessageDto()
+    const responseDto = new SuccessResponseDto()
     responseDto.data = mobileIndicatorList
     responseDto.message = "success"
 

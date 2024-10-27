@@ -1,23 +1,23 @@
 
 interface IConfig {
     redisHost: string
-    mongo: string
+    postgres: string
     rabbit: string
     type: "local" | "docker"
 }
 
-const isLocal: boolean = false
+const isLocal: boolean = true
 
 const dockerConfig: IConfig = {
     redisHost: "redis",
-    mongo: "mongodb",
+    postgres: "postgresql",
     rabbit: "rabbitmq",
     type: "docker"
 }
 
 const localConfig: IConfig = {
     redisHost: "localhost",
-    mongo: "localhost",
+    postgres: "localhost",
     rabbit: "localhost",
     type: "local"
 }

@@ -1,12 +1,14 @@
 import "express-async-errors"
 import express, { NextFunction, Request, Response } from "express"
+import "./models/index"
 import dotenv from "dotenv"
 import { BaseException } from "./exception/BaseException"
 import { indicatorRouter } from "./router/İndicatorRouter"
-import { connectDb } from "./config/db"
+import { syncDatabase, testConnection } from "./config/db"
 import { connectRedis } from "./config/RedisConnect"
 import path from "path"
 import { rabbitControl, redisControl } from "./config/TestConnection"
+import { ConfigRouter } from "./router/MobileConfigRouter"
 
 dotenv.config()
 const app = express()
@@ -16,6 +18,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 
 app.use("/api", indicatorRouter)
+app.use("/api/config", ConfigRouter)
 
 app.get("/", async (req, res) => {
     const redis = connectRedis()
@@ -41,8 +44,20 @@ app.get("/tex", (req, res) => {
 
 
 
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof BaseException) {
+        return res.status(err.statusCode).json({
+            message: err.message,
+            data: err.data
+        })
+    }
+    res.status(500).json({
+        message: 'Internal Server Error',
+        error: err.message
+    });
+})
 
-app.use((err: BaseException, req: Request, res: Response, next: NextFunction) => {
+/* app.use((err: BaseException, req: Request, res: Response, next: NextFunction) => {
     console.error(err.name);
     console.log("err => ", err)
     res.status(err.statusCode ?? 500).json({
@@ -50,7 +65,7 @@ app.use((err: BaseException, req: Request, res: Response, next: NextFunction) =>
         errors: err.data
     });
 });
-
+ */
 
 
 
@@ -58,7 +73,8 @@ app.use((err: BaseException, req: Request, res: Response, next: NextFunction) =>
 
 
 app.listen(5000, () => {
-    connectDb()
+    testConnection()
+    syncDatabase()
     rabbitControl()
     redisControl()
     console.log("server is running")
