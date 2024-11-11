@@ -8,6 +8,9 @@ const getMoonPhase = (date: Date) => {
     return phase
 }
 
+
+
+
 const phaseCalculator = (date: Date) => {
 
     /* const phaseValue = getMoonIllumination(date).phase

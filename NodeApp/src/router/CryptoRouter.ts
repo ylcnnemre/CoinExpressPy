@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express"
 import { sendToQueue } from "../services/SendToQueue";
+import { GetCryptoMoonController, GetCryptoMovingAverage } from "../controller/CryptoController";
+
 const CryptoRouter = express.Router()
 
-
 CryptoRouter.post("/", async (req: Request, res: Response) => {
-    console.log("asdasd", req.body)
     const body = {
         ...req.body,
         market: "crypto"
@@ -14,6 +14,8 @@ CryptoRouter.post("/", async (req: Request, res: Response) => {
     return res.json(parsedData)
 })
 
+CryptoRouter.get("/moon", GetCryptoMoonController)
+CryptoRouter.get("/ma",GetCryptoMovingAverage)
 
 CryptoRouter.get("/test", (req, res) => {
     res.json({

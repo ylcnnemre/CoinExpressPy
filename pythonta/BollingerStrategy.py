@@ -65,16 +65,18 @@ def BollingerBandStrategy(interval,market="turkey"):
             result = (bbUpper - bbLower) / sma20
             resultList.append({
                 "name" : row["name"],
-                "bbWidth" : result * 100
+                "bbWidth" : result * 100,
+                "bbUpper" : bbUpper,
+                "bbLower" : bbLower
             })
         liste=sorted(resultList,key=lambda x : x["bbWidth"])
-        print(liste)
+        print("liste",liste)
         return liste
 
 
 
 def binanceTest():
-    q = Query().set_markets("crypto").select('name', 'market', 'close', 'volume').where(
+    q = Query().set_markets("crypto").select('name', 'market', 'close', 'volume',"BB.upper").where(
         Column("exchange") == Column("BINANCE") ,
         Column("name").like("USDT"),
         Column("type").isin(["spot"])
@@ -85,8 +87,27 @@ def binanceTest():
     print("data",data)
 
 
+def bollingerTest():
+    q = Query().set_markets("crypto").select('name', 'market', 'close', 'volume',"SMA500","BB.upper").where(
+        Column("exchange") == Column("BINANCE") ,
+        Column("name").like("USDT"),
+        Column("type").isin(["spot"])
+    ).limit(50)
+    data=q.get_scanner_data()
+    data_frame = data[1]
+
+    # İndeks olmadan DataFrame'i yazdırıyoruz
+    print("data\n", data_frame.to_string(index=False))
+
 """ sonuc=BollingerBandStrategy("1h","crypto")
 
 print("sonux",sonuc) """
 
-binanceTest()
+""" binanceTest() """
+
+
+""" print("dat",data) """
+
+""" BollingerBandStrategy("1h","crypto") """
+
+bollingerTest()

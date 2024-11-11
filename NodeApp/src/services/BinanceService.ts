@@ -1,6 +1,7 @@
 import axios from "axios"
 import { getMoonPhase, phaseCalculator } from "./MoonPhase"
 import { format } from "date-fns"
+import { getDay } from "./DateService"
 const axiosInstance = axios.create({
     baseURL: "https://api.binance.com"
 })
@@ -15,13 +16,10 @@ function calculatePercentageChange(openPrice: number, closePrice: number): numbe
     return ((closePrice - openPrice) / openPrice) * 100;
 }
 
-const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: "1d", limit: 200 }): Promise<{
-    symbol: string,
-    phaseResult: Array<any>
-    prices: Array<any>
-}> => {
-    const response = await axiosInstance.get(`/api/v3/klines?symbol=${params.symbol}&interval=${params.interval}&limit=${params.limit}`)
-    const mainData: Array<Array<any>> = response.data
+
+const calculatePhaseData = (mainData: Array<any>, interval: IRequestType["interval"]) => {
+
+    const todayPhase = getMoonPhase(new Date())
     let phaseResult: Array<{
         phase: string,
         result: {
@@ -35,9 +33,10 @@ const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: 
             }
         }
     }> = []
-    let formatData = mainData.map(item => {
+
+    mainData.map(item => {
         let time = ConvertTime(item[0])
-        if (params.interval !== "1d") {
+        if (interval !== "1d") {
             return {
                 "time": time,
                 "open": item[1],
@@ -48,6 +47,7 @@ const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: 
         else {
             const dateObject = new Date(item[0]);
             let todayPhase = getMoonPhase(dateObject)
+            /*  let dateToDay = getDay(dateObject) */
 
             if (item[4] > item[1]) {
                 let control = phaseResult.findIndex(item => item.phase == todayPhase)
@@ -74,6 +74,7 @@ const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: 
                         }
                     })
                 }
+
             }
             else {
                 let control = phaseResult.findIndex(item => item.phase == todayPhase)
@@ -106,17 +107,33 @@ const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: 
                 "close": item[4],
                 "volume": item[5],
                 "phase": todayPhase
-
             }
 
         }
     })
+
+    const todayPhaseResult = phaseResult.filter(el => el?.phase == todayPhase)
+
     return {
-        symbol: params.symbol,
-        phaseResult: phaseResult,
-        prices: []
-        /*  prices: formatData */
+        phaseResult,
+        todayPhase: {
+            date: new Date().toISOString(),
+            phase: todayPhase,
+            todayPhaseResult: todayPhaseResult[0]
+        }
     }
+}
+
+const getCoinKlineData = () => {
+
+}
+
+
+const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: "1d", limit: 200 }) => {
+    const response = await axiosInstance.get(`/api/v3/klines?symbol=${params.symbol}&interval=${params.interval}&limit=${params.limit}`)
+    const mainData: Array<Array<any>> = response.data
+    return mainData
+
 }
 
 const ConvertTime = (timestamp: number) => {
@@ -129,11 +146,15 @@ const CoinTicker = async (): Promise<Array<{ symbol: string, baseAsset: string, 
     const response = await axiosInstance.get("/api/v3/exchangeInfo")
     const forbiddenList = ["USDC", "TUSD", "PAX", "BUSD", "EUR", "ETHBULL", "YFIDOWNUSDT", "YFIUPUSDT", "ETHBEAR", "BCHABC", "BCHSV", "BCHDOWNUSDT", "BCHUPUSDT",
         "EOSBULL", "EOSBEAR", "XRPBEAR", "XRPBULL", "BNBBULL", "BCHUPUSDT", "BCHDOWNUSDT",
-        "BNBBEAR", "BNBUP", "BNBDOWN", "BTCUP", "BTCDOWN", "ETHUP", "ETHDOWN", "ADADOWN", "ADAUP", "LINKUP", "LINKDOWN", "GBP", "DOTUP", "DOTDOWN", "LTCUP", "LTCDOWN"
+        "BNBBEAR", "BNBUP", "BNBDOWN", "BTCUP", "BTCDOWN", "ETHUP", "ETHDOWN", "ADADOWN", "ADAUP", "LINKUP", "LINKDOWN", "GBP", "DOTUP", "DOTDOWN", "LTCUP", "LTCDOWN",
+        "FILDOWNUSDT", "FILUPUSDT", "YFIUPUSDT", "YFIDOWNUSDT", "BCHDOWNUSDT", "BCHUPUSDT", "SXPDOWNUSDT", "SXPUPUSDT", "UNIDOWNUSDT", "UNIUPUSDT", "XRPDOWNUSDT", "XRPUPUSDT",
+        "TRXDOWNUSDT", "TRXUPUSDT", "EOSDOWNUSDT", "EOSUPUSDT", "XTZDOWNUSDT", "XTZUPUSDT", "TVKUSDT", "AUTOUSDT", "REEFUSDT", "SUSHIDOWNUSDT", "SUSHIUPUSDT",
+        "XEMUSDT", "ORNUSDT", "HNTUSDT", "LTCDOWNUSDT", "LTCUPUSDT", "DOTDOWNUSDT", "OCEANUSDT", "BNBUPUSDT", "BNBDOWNUSDT", "LINKDOWNUSDT", "LINKUPUSDT", "ETHUPUSDT", "ETHDOWNUSDT", "BTCUPUSDT",
+        "WTCUSDT", "XRPBULLUSDT", "ETHBULLUSDT", "DREPUSDT", "MCOUSDT", "DOCKUSDT", "MFTUSDT", "NPXUSDT", "ERDUSDT", "XMRUSDT"
     ]
 
     let tickers = response.data.symbols.filter((item: any) => {
-        return item.quoteAsset == "USDT" && !forbiddenList.includes(item.baseAsset)
+        return item.quoteAsset == "USDT" && !forbiddenList.includes(item.symbol)
     }).map((el: any) => {
         return {
             "symbol": el.symbol,
@@ -149,6 +170,7 @@ const CoinTicker = async (): Promise<Array<{ symbol: string, baseAsset: string, 
 export {
     CoinPrices,
     ConvertTime,
-    CoinTicker
+    CoinTicker,
+    calculatePhaseData
 }
 

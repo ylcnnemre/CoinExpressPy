@@ -1,4 +1,4 @@
- const tarama_listesi = [
+/*  const tarama_listesi = [
     {
         "key": "Strateji_1",
         "tag": "",
@@ -329,4 +329,36 @@ liste = tarama_listesi.map((el, index) => {
     }
 })
 
-console.log("liste", liste)
+console.log("liste", liste) */
+
+/* const { Moon } = require("lunarphase-js")
+const date = new Date()
+date.setDate(date.getDate() + 4)
+const phase = Moon.lunarPhase(date)
+const age = Moon.lunarAge(date)
+const percent = Moon.lunarAgePercent(date)
+const distance = Moon.lunarDistance(date)
+console.log("date => ", date)
+console.log("phaxx", phase)
+console.log("age => ", age)
+console.log("percent=> ", percent)
+console.log("distance=>", distance) */
+
+
+/* const phaseFormat = (phaseNumber) => {
+    if (phaseNumber == 0){
+        return "New Moon"
+    }
+    else if(phaseNumber > )
+} */
+
+/* const SunCalc = require("suncalc")
+
+const sunc = SunCalc.getMoonIllumination(date)
+
+console.log("sunc", sunc) */
+
+const date = new Date();
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+console.log(dayNames[date.getDay()]);  // "Monday" (Pazartesi)

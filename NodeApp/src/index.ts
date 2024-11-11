@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from "express"
 import "./models/index"
 import dotenv from "dotenv"
 import { BaseException } from "./exception/BaseException"
-import { indicatorRouter } from "./router/İndicatorRouter"
+import {  StockRouter } from "./router/StockRouter"
 import { syncDatabase, testConnection } from "./config/db"
 import { connectRedis } from "./config/RedisConnect"
 import path from "path"
@@ -19,7 +19,7 @@ app.use(express.json())
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 
-app.use("/api/stock", indicatorRouter)
+app.use("/api/stock", StockRouter)
 app.use("/api/config", ConfigRouter)
 app.use("/api/crypto", CryptoRouter)
 app.use("/api/strategies", StrategyRouter)
