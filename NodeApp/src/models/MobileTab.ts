@@ -4,6 +4,11 @@ import { sequelize } from "../config/db";
 
 
 const TabModel = sequelize.define("Tabs", {
+    key: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ""
+    },
     name_tr: {
         type: DataTypes.STRING,
         allowNull: false

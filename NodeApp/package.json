@@ -22,12 +22,8 @@
     "ioredis": "^5.4.1",
     "lunarphase-js": "^2.0.3",
     "mongoose": "^8.4.1",
-<<<<<<< HEAD
     "pg": "^8.12.0",
     "sequelize": "^6.37.3",
-=======
-    "suncalc": "^1.9.0",
->>>>>>> 6256e1d21c7e7e405348d57377185cddd0406e1e
     "uuid": "^9.0.1"
   },
   "devDependencies": {

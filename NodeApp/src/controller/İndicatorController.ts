@@ -9,7 +9,7 @@ const indicatorFilterController = async (req: Request, res: Response) => {
     console.log("reqq", req.body)
     const body = {
         ...req.body,
-        market: "france"
+        market: "turkey"
     }
     const response: any = await sendToQueue(
         body, "rpc_queue",
@@ -17,6 +17,7 @@ const indicatorFilterController = async (req: Request, res: Response) => {
     const parsedData = JSON.parse(response)
     return res.json(parsedData)
 }
+
 
 const getIndicatorListControllre = (req: Request, res: Response) => {
     const responseDto = new SuccessResponseDto()
@@ -39,5 +40,6 @@ export const getStrategiesListController = async (req: Request, res: Response) =
 
 export {
     indicatorFilterController,
-    getIndicatorListControllre
+    getIndicatorListControllre,
+
 }

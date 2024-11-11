@@ -9,17 +9,17 @@ const indicatorRouter = express.Router()
 
 indicatorRouter.post("/", indicatorFilterController)
 
-indicatorRouter.get("/indicatorList", getIndicatorListControllre)
+/* indicatorRouter.get("/indicatorList", getIndicatorListControllre) */
 
-indicatorRouter.post("/strategies", getStrategiesListController)
+/* indicatorRouter.post("/strategies", getStrategiesListController)
 
 indicatorRouter.get("/strategies", (req, res) => {
     return res.json({
         data: tarama_listesi
     })
-})
+}) */
 
-indicatorRouter.get("/crypto",GetCryptoPriceController)
+/* indicatorRouter.get("/crypto",GetCryptoPriceController) */
 
 
 indicatorRouter.post("/key", async (req, res) => {

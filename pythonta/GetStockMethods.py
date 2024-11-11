@@ -39,6 +39,7 @@ def getStockData(market, columns, conditions, tickers: list, offset=0, limit=100
     "ascending": False
 }):
     print("selam12313123")
+    print("formatCondzx", conditions)
     query = Query().set_markets(market)
     if tickers is not None:
         query.set_tickers(*tickers)

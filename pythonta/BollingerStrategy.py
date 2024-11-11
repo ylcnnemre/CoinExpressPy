@@ -80,8 +80,7 @@ def binanceTest():
         Column("type").isin(["spot"])
     ).limit(50)
     
-    Query().set_markets("turkey")
-    
+
     data=q.get_scanner_data()
     print("data",data)
 

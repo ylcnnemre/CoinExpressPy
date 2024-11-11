@@ -3258,4 +3258,51 @@ export const mobileIndicatorList: Array<IindicatorList> = [
         }
         ]
     },
+    {
+        indicatorName: "Volatility.D",
+        lang: {
+            en: "Volatility.D",
+            tr: "Günlük Volatilite  "
+        },
+        condition: [{
+            name: "less",
+            langCondition: {
+                "en": "less",
+                "tr": "küçüktür"
+            },
+            type: "input"
+        }, {
+            name: "greater",
+            langCondition: {
+                "en": "greater",
+                "tr": "büyüktür"
+            },
+            type: "input"
+        },
+        {
+            name: "crosses_below",
+            langCondition: {
+                "en": "crosses below",
+                "tr": "aşağı keser"
+            },
+            type: "input",
+        },
+        {
+            name: "crosses_above",
+            langCondition: {
+                "en": "crosess above",
+                "tr": "yukarı keser"
+            },
+            type: "input"
+        },
+        {
+            name: "between",
+            langCondition: {
+                "en": "between",
+                "tr": "arasında"
+            },
+            type: "range"
+        }
+        ]
+    }
 ]
