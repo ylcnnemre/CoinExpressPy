@@ -2,6 +2,7 @@ import axios from "axios"
 import { getMoonPhase, phaseCalculator } from "./MoonPhase"
 import { format } from "date-fns"
 import { getDay } from "./DateService"
+import { connectRedis } from "../config/RedisConnect"
 const axiosInstance = axios.create({
     baseURL: "https://api.binance.com"
 })
@@ -124,17 +125,42 @@ const calculatePhaseData = (mainData: Array<any>, interval: IRequestType["interv
     }
 }
 
-const getCoinKlineData = () => {
-
-}
-
 
 const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: "1d", limit: 200 }) => {
     const response = await axiosInstance.get(`/api/v3/klines?symbol=${params.symbol}&interval=${params.interval}&limit=${params.limit}`)
     const mainData: Array<Array<any>> = response.data
     return mainData
+}
+
+
+const AllCoinPrice = async ({ coinLimit = 100, klineLimit = 200 }: { coinLimit?: number, klineLimit?: IRequestType["limit"] }) => {
+    const redis = connectRedis()
+    const allCoinCache = await redis.get("all-coin-price")
+    if (allCoinCache) {
+        return JSON.parse(allCoinCache)
+    }
+    else {
+        const symbolList = await CoinTicker()
+        const response = await Promise.all(
+            symbolList.slice(0, coinLimit).map(el => {
+                return CoinPrices({
+                    interval: "1d",
+                    limit: klineLimit,
+                    symbol: el.symbol
+                }).then(val => {
+                    return {
+                        name: el.symbol,
+                        klineInfo: val,
+                    }
+                })
+            })
+        )
+        redis.set("all-coin-price", JSON.stringify(response), "EX", 300)
+        return response
+    }
 
 }
+
 
 const ConvertTime = (timestamp: number) => {
     const date = new Date(timestamp)
@@ -171,6 +197,7 @@ export {
     CoinPrices,
     ConvertTime,
     CoinTicker,
-    calculatePhaseData
+    calculatePhaseData,
+    AllCoinPrice
 }
 

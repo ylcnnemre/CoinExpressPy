@@ -88,16 +88,13 @@ def binanceTest():
 
 
 def bollingerTest():
-    q = Query().set_markets("crypto").select('name', 'market', 'close', 'volume',"SMA500","BB.upper").where(
+    q = Query().set_markets("crypto").select('name', 'market', 'close', 'volume',"RSI|240").where(
         Column("exchange") == Column("BINANCE") ,
         Column("name").like("USDT"),
         Column("type").isin(["spot"])
-    ).limit(50)
+    ).limit(10)
     data=q.get_scanner_data()
-    data_frame = data[1]
-
-    # İndeks olmadan DataFrame'i yazdırıyoruz
-    print("data\n", data_frame.to_string(index=False))
+    print("da",data)
 
 """ sonuc=BollingerBandStrategy("1h","crypto")
 

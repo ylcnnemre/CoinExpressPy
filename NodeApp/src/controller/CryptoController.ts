@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
-import { calculatePhaseData, CoinPrices, CoinTicker, ConvertTime } from "../services/BinanceService"
+import { AllCoinPrice, calculatePhaseData, CoinPrices, CoinTicker, ConvertTime } from "../services/BinanceService"
 import { getMoonPhase } from "../services/MoonPhase"
 import { connectRedis } from "../config/RedisConnect"
-import { sma } from "indicatorts"
+import { ema, sma } from "indicatorts"
 
 
 const GetCryptoMoonController = async (req: Request, res: Response) => {
@@ -52,38 +52,58 @@ const GetCryptoMoonController = async (req: Request, res: Response) => {
 }
 
 const GetCryptoMovingAverage = async (req: Request, res: Response) => {
-    const symbolList = await CoinTicker()
-    const response = await Promise.all(
-        symbolList.slice(0, 10).map(el => {
-            return CoinPrices({
-                interval: "1d",
-                limit: 100,
-                symbol: el.symbol
-            }).then(val => {
-                return {
-                    name: el.symbol,
-                    klineInfo: val,
-
-                }
-            })
+    const response = await AllCoinPrice({
+        coinLimit: 100,
+        klineLimit: 500
+    })
+    let test = response.map((item: any) => {
+        const close = item.klineInfo.map((el: any) => parseFloat(el[4]))
+        const sma500 = sma(close, {
+            period: 500
         })
-    )
-    let test = response.map(item => {
-        const close = item.klineInfo.map(el => el[4])
-        const smaRes = sma(close, {
+        const sma200 = sma(close, {
+            period: 200
+        })
+        const sma100 = sma(close, {
+            period: 100
+        })
+        const sma50 = sma(close, {
             period: 50
         })
+
+        const ema50 = ema(close, {
+            period: 50
+        })
+        const ema100 = ema(close, {
+            period: 100
+        })
+        const ema200 = ema(close, {
+            period: 200
+        })
+        const ema500 = ema(close, {
+            period: 500
+        })
+
+
         return {
             name: item.name,
-            sma50: smaRes,
-            prices: close
-
+            sma: {
+                sma50: sma50.slice(-3),
+                sma100: sma100.slice(-3),
+                sma200: sma200.slice(-3),
+                sma500: sma500.slice(-3),
+            },
+            ema: {
+                ema50: ema50.slice(-3),
+                ema100: ema100.slice(-3),
+                ema200: ema200.slice(-3),
+                ema500: ema500.slice(-3)
+            }
         }
     })
     return res.json({
-        leng: symbolList.length,
+        length: test.length,
         data: test,
-
     })
 }
 
