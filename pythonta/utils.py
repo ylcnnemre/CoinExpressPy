@@ -42,7 +42,7 @@ def convertCondition(data: List[dict[str, Any]], interval="1d"):
     for i in data:
         intervalTemp = intervalControl(interval)
         tempdata = {}
-        if (i["column"] != "name"):
+        if (i["column"] != "name"  and i["column"] != "exchange" and i["column"] != "type"  ):
             tempdata["column"] = i["column"] + intervalTemp
             tempdata["operator"] = i["operator"]
             if (isinstance(i["value"], str)):

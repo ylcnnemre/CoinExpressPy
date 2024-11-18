@@ -127,9 +127,19 @@ const calculatePhaseData = (mainData: Array<any>, interval: IRequestType["interv
 
 
 const CoinPrices = async (params: IRequestType = { symbol: "BTCUSDT", interval: "1d", limit: 200 }) => {
-    const response = await axiosInstance.get(`/api/v3/klines?symbol=${params.symbol}&interval=${params.interval}&limit=${params.limit}`)
-    const mainData: Array<Array<any>> = response.data
-    return mainData
+    const redis = connectRedis()
+    const control = await redis.get(`select_detail_${params.symbol}_${params.interval}`)
+    if (control) {
+        const data = JSON.parse(control)
+        return data
+    }
+    else {
+        const response = await axiosInstance.get(`/api/v3/klines?symbol=${params.symbol}&interval=${params.interval}&limit=${params.limit}`)
+        const mainData: Array<Array<any>> = response.data
+        await redis.set(`select_detail_${params.symbol}_${params.interval}`, JSON.stringify(mainData), "EX", 30)
+        return mainData
+    }
+
 }
 
 
@@ -155,7 +165,7 @@ const AllCoinPrice = async ({ coinLimit = 100, klineLimit = 200 }: { coinLimit?:
                 })
             })
         )
-        redis.set("all-coin-price", JSON.stringify(response), "EX", 300)
+        redis.set("all-coin-price", JSON.stringify(response), "EX", 30)
         return response
     }
 

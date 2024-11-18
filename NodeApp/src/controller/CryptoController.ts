@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { AllCoinPrice, calculatePhaseData, CoinPrices, CoinTicker, ConvertTime } from "../services/BinanceService"
 import { getMoonPhase } from "../services/MoonPhase"
 import { connectRedis } from "../config/RedisConnect"
-import { ema, sma } from "indicatorts"
+import { ema, sma, dema } from "indicatorts"
 
 
 const GetCryptoMoonController = async (req: Request, res: Response) => {
@@ -83,6 +83,18 @@ const GetCryptoMovingAverage = async (req: Request, res: Response) => {
         const ema500 = ema(close, {
             period: 500
         })
+        const dema50 = dema(close, {
+            period: 50
+        })
+        const dema100 = dema(close, {
+            period: 100
+        })
+        const dema200 = dema(close, {
+            period: 200
+        })
+        const dema500 = dema(close, {
+            period: 500
+        })
 
 
         return {
@@ -98,6 +110,12 @@ const GetCryptoMovingAverage = async (req: Request, res: Response) => {
                 ema100: ema100.slice(-3),
                 ema200: ema200.slice(-3),
                 ema500: ema500.slice(-3)
+            },
+            dema: {
+                dema50: dema50.slice(-3),
+                dema100: dema100.slice(-3),
+                dema200: dema200.slice(-3),
+                dema500: dema500.slice(-3)
             }
         }
     })

@@ -11,8 +11,8 @@ import aiormq
 
 # Redis bağlantısı
 redis_params = {
-    'host': 'redis',
-    'port': 6379,
+    'host': 'localhost',
+    'port': 5679,
     'password': 'mypassword*1xw',
     'decode_responses': True
 }
@@ -241,7 +241,7 @@ async def check_rabbitmq_connection():
     try:
         await asyncio.sleep(5)
         connection = await aio_pika.connect_robust(
-            "amqp://guest:12345*x@rabbitmq"
+            "amqp://guest:12345*x@localhost"
         )
         print("RabbitMQ'ya başarıyla bağlandı.")
         # Bağlantıyı kapat
@@ -253,7 +253,7 @@ async def check_rabbitmq_connection():
 async def main() -> None:
     print("PyFilter Başladı")
     await check_rabbitmq_connection()
-    connection = await aio_pika.connect("amqp://guest:12345*x@rabbitmq")
+    connection = await aio_pika.connect("amqp://guest:12345*x@localhost")
 
     async with connection:
         channel = await connection.channel()
