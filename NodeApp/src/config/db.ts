@@ -27,7 +27,7 @@ async function testConnection() {
 
 async function syncDatabase() {
     try {
-        await sequelize.sync({ alter: true }); // Tabloyu yeniden oluşturur, veriler silinir!
+        await sequelize.sync({ alter: true });
         console.log("senkronizasyon tamam")
     } catch (error) {
         console.error('Error syncing the database:', error);

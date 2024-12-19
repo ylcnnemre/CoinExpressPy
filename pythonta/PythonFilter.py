@@ -7,12 +7,12 @@ from GetStockMethods import getStockData
 from strategies import runStrategy, tarama_listesi
 from constant import defaultColumns, defaultInterval, defaultMarket
 from utils import convertCondition, jsonConvertCustom
-import aiormq
+
 
 # Redis bağlantısı
 redis_params = {
-    'host': 'localhost',
-    'port': 5679,
+    'host': 'redis',
+    'port': 6379,
     'password': 'mypassword*1xw',
     'decode_responses': True
 }
@@ -253,7 +253,7 @@ async def check_rabbitmq_connection():
 async def main() -> None:
     print("PyFilter Başladı")
     await check_rabbitmq_connection()
-    connection = await aio_pika.connect("amqp://guest:12345*x@localhost")
+    connection = await aio_pika.connect("amqp://guest:12345*x@rabbitmq")
 
     async with connection:
         channel = await connection.channel()
