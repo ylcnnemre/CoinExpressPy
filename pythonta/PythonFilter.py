@@ -7,12 +7,13 @@ from GetStockMethods import getStockData
 from strategies import runStrategy, tarama_listesi
 from constant import defaultColumns, defaultInterval, defaultMarket
 from utils import convertCondition, jsonConvertCustom
+from redis_checker import check_redis_connection
 
-
+isLocal = True
 # Redis bağlantısı
 redis_params = {
-    'host': 'redis',
-    'port': 6379,
+    'host': 'localhost' if isLocal else 'redis',
+    'port':  5679 if isLocal  else 6379,
     'password': 'mypassword*1xw',
     'decode_responses': True
 }
@@ -21,7 +22,7 @@ redis_params = {
 executor = ThreadPoolExecutor()
 
 
-async def on_request(channel: aio_pika.abc.AbstractChannel, message: aio_pika.IncomingMessage):
+async def bist_on_request(channel: aio_pika.abc.AbstractChannel, message: aio_pika.IncomingMessage):
     async with message.process():
         try:
             body = json.loads(message.body.decode())
@@ -229,7 +230,7 @@ async def consume_message(queue: aio_pika.abc.AbstractQueue, channel: aio_pika.a
         if message.routing_key == 'strategies_select':
             asyncio.create_task(handle_strategy_select(channel, message))
         elif message.routing_key == 'rpc_queue':
-            asyncio.create_task(on_request(channel, message))
+            asyncio.create_task(bist_on_request(channel, message))
         elif message.routing_key == "crypto_queue":
             asyncio.create_task(crypto_on_request(channel, message))
         else:
@@ -241,7 +242,7 @@ async def check_rabbitmq_connection():
     try:
         await asyncio.sleep(5)
         connection = await aio_pika.connect_robust(
-            "amqp://guest:12345*x@localhost"
+            f"amqp://guest:12345*x@{'localhost' if isLocal else 'rabbitmq'}"
         )
         print("RabbitMQ'ya başarıyla bağlandı.")
         # Bağlantıyı kapat
@@ -251,13 +252,11 @@ async def check_rabbitmq_connection():
 
 
 async def main() -> None:
-    print("PyFilter Başladı")
     await check_rabbitmq_connection()
-    connection = await aio_pika.connect("amqp://guest:12345*x@rabbitmq")
-
+    """ await check_redis_connection(redis_params['host'], redis_params['port'], redis_params['password'], redis_params['db']) """
+    connection = await aio_pika.connect(f"amqp://guest:12345*x@{'localhost' if isLocal else 'rabbitmq'}")
     async with connection:
         channel = await connection.channel()
-
         queue1 = await channel.declare_queue("strategies_select")
         queue2 = await channel.declare_queue("rpc_queue")
         queue3 = await channel.declare_queue("crypto_queue")
@@ -266,12 +265,10 @@ async def main() -> None:
             consume_message(queue2, channel),
             consume_message(queue3, channel)
         )
-
         print(" [*] Waiting for messages. To exit press CTRL+C")
         await asyncio.Future()
 
 
-print("selam")
 
 if __name__ == "__main__":
     asyncio.run(main())
