@@ -11,6 +11,7 @@ import { rabbitControl, redisControl } from "./config/TestConnection"
 import { ConfigRouter } from "./router/MobileConfigRouter"
 import { CryptoRouter } from "./router/CryptoRouter"
 import { StrategyRouter } from "./router/StrategyRouter"
+import { SummaryRouter } from "./router/SummaryRouter"
 
 dotenv.config()
 const app = express()
@@ -23,6 +24,7 @@ app.use("/api/stock", StockRouter)
 app.use("/api/config", ConfigRouter)
 app.use("/api/crypto", CryptoRouter)
 app.use("/api/strategies", StrategyRouter)
+app.use("/api/summary", SummaryRouter)
 
 app.get("/", async (req, res) => {
     const redis = connectRedis()

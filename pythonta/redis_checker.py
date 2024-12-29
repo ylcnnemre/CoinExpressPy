@@ -1,14 +1,15 @@
 import redis
 import sys
 
-def check_redis_connection(host='localhost', port=6379, password='mypassword*1xw', db=0):
+def check_redis_connection(isLocal:bool=True):
     try:
+        
         # Redis bağlantı parametreleri
         redis_client = redis.Redis(
-            host=host,
-            port=port,
-            password=password,
-            db=db,
+            host= 'localhost' if isLocal else 'redis',
+            port=5679 if isLocal else 6379,
+            password='mypassword*1xw',
+            db=0,
             decode_responses=True
         )
         

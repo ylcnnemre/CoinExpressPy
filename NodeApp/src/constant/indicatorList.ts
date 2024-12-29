@@ -428,16 +428,6 @@ export const mobileIndicatorList: Array<IindicatorList> = [
             },
         ]
     },
-
-    /* {
-        indicatorName: "average_volume_10d_calc",
-        condition: [
-            {
-                "name": "between",
-                "type": "range"
-            }
-        ]
-    }, */
     {
         indicatorName: "Stoch.RSI.K",
         lang: {
@@ -448,6 +438,10 @@ export const mobileIndicatorList: Array<IindicatorList> = [
             {
                 name: "less",
                 type: "select",
+                langCondition: {
+                    en: "less",
+                    tr: "küçüktür"
+                },
                 values: [{
                     "key": "Stoch.RSI.D",
                     "en": "Stochastic RSI Slow",
@@ -456,6 +450,10 @@ export const mobileIndicatorList: Array<IindicatorList> = [
             },
             {
                 "name": "greater",
+                langCondition: {
+                    en: "greater",
+                    tr: "büyüktür"
+                },
                 "type": "select",
                 values: [{
                     "key": "Stoch.RSI.D",
@@ -466,6 +464,10 @@ export const mobileIndicatorList: Array<IindicatorList> = [
             {
                 name: "crosses_above",
                 type: "select",
+                langCondition: {
+                    en: "crosses above",
+                    tr: "yukarı keser"
+                },
                 values: [{
                     "key": "Stoch.RSI.D",
                     "en": "Stochastic RSI Slow",
@@ -475,6 +477,10 @@ export const mobileIndicatorList: Array<IindicatorList> = [
             {
                 name: "crosses_below",
                 type: "select",
+                langCondition: {
+                    en: "crosses below",
+                    tr: "aşağı keser"
+                },
                 values: [{
                     "key": "Stoch.RSI.D",
                     "en": "Stochastic RSI Slow",

@@ -8,8 +8,8 @@ from strategies import runStrategy, tarama_listesi
 from constant import defaultColumns, defaultInterval, defaultMarket
 from utils import convertCondition, jsonConvertCustom
 from redis_checker import check_redis_connection
-
-isLocal = True
+from SummaryStock import getSummary
+isLocal = False
 # Redis bağlantısı
 redis_params = {
     'host': 'localhost' if isLocal else 'redis',
@@ -225,6 +225,75 @@ async def crypto_on_request(channel: aio_pika.abc.AbstractChannel, message: aio_
         )
 
 
+
+async def stock_summary(channel: aio_pika.abc.AbstractChannel, message: aio_pika.IncomingMessage):
+    async with message.process():
+        try:
+            body = json.loads(message.body.decode())
+            print("bodySUMMMMMMM =>>>=>>=>=", body) 
+            redis_client = redis.Redis(**redis_params)
+            cached_data = redis_client.get(message.body)
+            if cached_data is None:
+                print("cached_none ==>")
+                symbol = body.get("symbol", "BTCUSDT")
+                interval = body.get("interval", "1d")
+                market = body.get("market", "crypto")
+
+                # getStockData fonksiyonunu ThreadPoolExecutor içinde çağır
+                data = await asyncio.get_event_loop().run_in_executor(
+                    executor,
+                    getSummary,
+                    symbol,
+                    market,
+                    interval
+                )
+
+                response = {
+                    "error": False,
+                    "message": "",
+                    "length": len(data),
+                    "items": data
+                }
+                keyBody= {
+                    "market" : body.get("market"),
+                    "interval" : body.get("interval"),
+                    "symbol" : body.get("symbol")
+                }
+                key=json.dumps(keyBody)
+                print("key", key)
+                redis_client.set(json.dumps(keyBody), json.dumps(data), ex=5)
+            else:
+                print("cache_summarry ???> ")
+                cachedData = json.loads(cached_data)
+                response = {
+                    "error": False,
+                    "message": "",
+                    "length": len(cachedData),
+                    "items": cachedData
+                }
+        except Exception as ex:
+            print("ex", ex)
+            response = {
+                    "error": True,
+                    "message": "",
+                    "length": 0,
+                    "items": []
+                }
+
+        await channel.default_exchange.publish(
+            aio_pika.Message(
+                body=json.dumps(response).encode(),
+                correlation_id=message.correlation_id
+            ),
+            routing_key=message.reply_to
+        )
+
+
+
+
+
+
+
 async def consume_message(queue: aio_pika.abc.AbstractQueue, channel: aio_pika.abc.AbstractChannel):
     async for message in queue:
         if message.routing_key == 'strategies_select':
@@ -233,6 +302,8 @@ async def consume_message(queue: aio_pika.abc.AbstractQueue, channel: aio_pika.a
             asyncio.create_task(bist_on_request(channel, message))
         elif message.routing_key == "crypto_queue":
             asyncio.create_task(crypto_on_request(channel, message))
+        elif message.routing_key == "stock_summary":
+            asyncio.create_task(stock_summary(channel, message))
         else:
             # Bilinmeyen bir routing key durumu
             print(f"Unknown routing key: {message.routing_key}")
@@ -253,6 +324,7 @@ async def check_rabbitmq_connection():
 
 async def main() -> None:
     await check_rabbitmq_connection()
+    check_redis_connection(isLocal)
     """ await check_redis_connection(redis_params['host'], redis_params['port'], redis_params['password'], redis_params['db']) """
     connection = await aio_pika.connect(f"amqp://guest:12345*x@{'localhost' if isLocal else 'rabbitmq'}")
     async with connection:
@@ -260,10 +332,12 @@ async def main() -> None:
         queue1 = await channel.declare_queue("strategies_select")
         queue2 = await channel.declare_queue("rpc_queue")
         queue3 = await channel.declare_queue("crypto_queue")
+        queue4 = await channel.declare_queue("stock_summary")
         await asyncio.gather(
             consume_message(queue1, channel),
             consume_message(queue2, channel),
-            consume_message(queue3, channel)
+            consume_message(queue3, channel),
+            consume_message(queue4, channel)
         )
         print(" [*] Waiting for messages. To exit press CTRL+C")
         await asyncio.Future()

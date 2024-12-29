@@ -1,20 +1,23 @@
-from tradingview_screener import Query, Column
+from tradingview_ta import TA_Handler, Interval
 import pandas as pd
 import json
-from utils import dfToJsonConvert
-
 
 def getStockData():
-
-    query = Query().set_markets("turkey")
-    # Sorguda seçilecek kolonları belirleyin
-    query = query.select("name", "close", "change")
-    query.offset(0).limit(100)
-    # Verileri
-    data = query.get_scanner_data()
-
+    handler = TA_Handler(
+        symbol="THYAO",
+        exchange="BIST",
+        screener="turkey",
+        interval=Interval.INTERVAL_1_DAY
+    )
+    
+    analysis = handler.get_analysis()
+    data = {
+        "name": "THYAO",
+        "close": analysis.indicators["close"],
+        "change": analysis.indicators["change"]
+    }
+    
     return data
-
 
 res = getStockData()
 print("res", res)

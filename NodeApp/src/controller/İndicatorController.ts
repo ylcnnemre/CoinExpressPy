@@ -6,7 +6,7 @@ import { mobileIndicatorList } from "../constant/indicatorList"
 
 
 const indicatorFilterController = async (req: Request, res: Response) => {
-    console.log("reqq", req.body)
+    console.log("reqq ==>", req.body)
     const body = {
         ...req.body,
         market: "turkey"

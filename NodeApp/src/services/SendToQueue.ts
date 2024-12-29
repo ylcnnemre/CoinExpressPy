@@ -3,7 +3,7 @@ import amqp from "amqplib"
 import { rabbitConnect } from "../config/RabbitMqConnection";
 import { connectRedis } from "../config/RedisConnect";
 
-async function sendToQueue(message: any, queue: string) {
+async function sendToQueue(message: any, queue: string, EX: number = 600) {
     const connection: any = await rabbitConnect()
     const channel = await connection.createChannel();
     console.log("mess", message)
@@ -19,7 +19,7 @@ async function sendToQueue(message: any, queue: string) {
             "status": "pending"
         }))
     }
-    await redis.set(keyv1, message.id, "EX", 600)
+    await redis.set(keyv1, message.id, "EX", EX)
     const responseQueue = await channel.assertQueue('', { exclusive: true });
     /* await redis.expire(`strId-${message.id.toString()}`, 20) */
     return new Promise((resolve, reject) => {
