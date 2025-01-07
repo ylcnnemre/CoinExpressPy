@@ -63,18 +63,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     });
 })
 
-/* app.use((err: BaseException, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.name);
-    console.log("err => ", err)
-    res.status(err.statusCode ?? 500).json({
-        message: err.message,
-        errors: err.data
-    });
-});
- */
-
-
-
 
 
 
